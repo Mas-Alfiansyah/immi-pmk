@@ -1,16 +1,18 @@
-export type TransactionType = 'in' | 'out';
+export type PaymentMethod = 'online' | 'offline' | '';
 
-export interface Transaction {
-  id: string;
-  title: string;
-  amount: number;
-  type: TransactionType;
-  date: string;
-  category: string;
+export interface MemberPayment {
+  no: number;
+  nama: string;
+  t1: string;
+  v1: number;
+  m1: PaymentMethod;
+  t2: string;
+  v2: number;
+  m2: PaymentMethod;
 }
 
-export interface TransactionStats {
-  totalIn: number;
-  totalOut: number;
-  balance: number;
+export interface MonthlyStats {
+  totalOnline: number;
+  totalOffline: number;
+  totalKas: number;
 }

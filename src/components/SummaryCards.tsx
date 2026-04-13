@@ -1,34 +1,34 @@
-import { ArrowUpCircle, ArrowDownCircle, Scale } from 'lucide-react';
-import type { TransactionStats } from '../types';
+import { Wallet, CreditCard, Banknote } from 'lucide-react';
+import type { MonthlyStats } from '../types';
 import { formatCurrency } from '../utils/ui';
 import { motion } from 'framer-motion';
 
 interface SummaryCardsProps {
-  stats: TransactionStats;
+  stats: MonthlyStats;
 }
 
 export const SummaryCards = ({ stats }: SummaryCardsProps) => {
   const cards = [
     {
-      label: 'Total Pemasukan',
-      value: stats.totalIn,
-      icon: ArrowUpCircle,
+      label: 'Setoran Online',
+      value: stats.totalOnline,
+      icon: CreditCard,
       color: 'text-emerald-600',
       bg: 'bg-emerald-50',
       border: 'border-emerald-100',
     },
     {
-      label: 'Total Pengeluaran',
-      value: stats.totalOut,
-      icon: ArrowDownCircle,
-      color: 'text-rose-600',
-      bg: 'bg-rose-50',
-      border: 'border-rose-100',
+      label: 'Setoran Offline',
+      value: stats.totalOffline,
+      icon: Banknote,
+      color: 'text-blue-600',
+      bg: 'bg-blue-50',
+      border: 'border-blue-100',
     },
     {
-      label: 'Saldo Akhir',
-      value: stats.balance,
-      icon: Scale,
+      label: 'Total Saldo Kas',
+      value: stats.totalKas,
+      icon: Wallet,
       color: 'text-primary-600',
       bg: 'bg-primary-50',
       border: 'border-primary-100',
@@ -40,17 +40,24 @@ export const SummaryCards = ({ stats }: SummaryCardsProps) => {
       {cards.map((card, idx) => (
         <motion.div
           key={card.label}
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: idx * 0.1 }}
-          className={`p-6 rounded-2xl border ${card.border} ${card.bg} shadow-sm`}
+          className={`p-8 rounded-[32px] border ${card.border} ${card.bg} shadow-sm relative overflow-hidden group hover:shadow-lg transition-all`}
         >
-          <div className="flex items-center justify-between mb-4">
-            <span className="text-sm font-medium text-slate-500">{card.label}</span>
-            <card.icon className={card.color} size={24} />
+          <div className="flex items-center justify-between mb-4 relative z-10">
+            <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">{card.label}</span>
+            <div className={`p-2 rounded-xl bg-white shadow-sm ${card.color}`}>
+              <card.icon size={20} />
+            </div>
           </div>
-          <div className={`text-2xl font-bold ${card.color}`}>
+          <div className={`text-2xl font-black relative z-10 ${card.color}`}>
             {formatCurrency(card.value)}
+          </div>
+          
+          {/* Subtle background decoration */}
+          <div className={`absolute -right-4 -bottom-4 opacity-5 group-hover:scale-110 transition-transform ${card.color}`}>
+            <card.icon size={120} />
           </div>
         </motion.div>
       ))}

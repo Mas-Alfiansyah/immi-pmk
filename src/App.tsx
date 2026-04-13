@@ -41,7 +41,7 @@ function App() {
               onClick={() => setActiveTab('iuran')}
               className={`flex items-center gap-3 px-8 py-4 rounded-lg font-black text-xs uppercase tracking-widest transition-all ${
                 activeTab === 'iuran' 
-                  ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-200 scale-105' 
+                  ? 'bg-emerald-600 text-white shadow-lg shadow-indigo-200 scale-105' 
                   : 'text-slate-400 hover:text-slate-600 hover:bg-slate-50'
               }`}
             >
@@ -51,7 +51,7 @@ function App() {
               onClick={() => setActiveTab('catatan')}
               className={`flex items-center gap-3 px-8 py-4 rounded-lg font-black text-xs uppercase tracking-widest transition-all ${
                 activeTab === 'catatan' 
-                  ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-200 scale-105' 
+                  ? 'bg-emerald-600 text-white shadow-lg shadow-indigo-200 scale-105' 
                   : 'text-slate-400 hover:text-slate-600 hover:bg-slate-50'
               }`}
             >

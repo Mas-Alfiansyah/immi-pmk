@@ -35,7 +35,7 @@ export const LedgerModal = ({ onAdd, isLoading }: LedgerModalProps) => {
       <div className="fixed bottom-8 right-8 z-40">
         <button
           onClick={() => setIsOpen(true)}
-          className="flex items-center gap-2 px-8 py-4 rounded-lg bg-indigo-600 text-white shadow-2xl shadow-indigo-200 hover:bg-indigo-700 transition-all hover:scale-105 active:scale-95 group font-black uppercase tracking-widest text-sm"
+          className="flex items-center gap-2 px-8 py-4 rounded-lg bg-emerald-600 text-white shadow-2xl shadow-indigo-200 hover:bg-indigo-700 transition-all hover:scale-105 active:scale-95 group font-black uppercase tracking-widest text-sm"
         >
           Input Catatan Baru
         </button>

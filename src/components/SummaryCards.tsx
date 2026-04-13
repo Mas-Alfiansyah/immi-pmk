@@ -22,25 +22,31 @@ export const SummaryCards = ({ totalOnline, totalOffline, totalKas, isLoading }:
       title: 'Setoran Online',
       amount: totalOnline,
       icon: ArrowUpRight,
-      color: 'bg-blue-600',
-      shadow: 'shadow-blue-200',
-      textColor: 'text-blue-600'
+      // Menggunakan gradasi dari biru tua ke biru yang sedikit lebih cerah
+      gradient: 'from-blue-600 to-blue-800',
+      iconBg: 'bg-white/20',
+      textColor: 'text-white',
+      labelColor: 'text-blue-100'
     },
     {
       title: 'Setoran Offline',
       amount: totalOffline,
       icon: ArrowDownRight,
-      color: 'bg-amber-600',
-      shadow: 'shadow-amber-200',
-      textColor: 'text-amber-600'
+      // Menggunakan warna Amber/Orange yang hangat
+      gradient: 'from-amber-500 to-orange-600',
+      iconBg: 'bg-white/20',
+      textColor: 'text-white',
+      labelColor: 'text-amber-100'
     },
     {
       title: 'Total Saldo Kas',
       amount: totalKas,
       icon: Wallet,
-      color: 'bg-emerald-600',
-      shadow: 'shadow-emerald-200',
-      textColor: 'text-emerald-600'
+      // Menggunakan Emerald sesuai identitas "Hijau" yang biasanya identik dengan Kas
+      gradient: 'from-emerald-600 to-teal-800',
+      iconBg: 'bg-white/20',
+      textColor: 'text-white',
+      labelColor: 'text-emerald-100'
     }
   ];
 
@@ -52,27 +58,36 @@ export const SummaryCards = ({ totalOnline, totalOffline, totalKas, isLoading }:
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: idx * 0.1 }}
           key={idx}
-          className="bg-white p-8 rounded-lg shadow-xl shadow-slate-100 border border-slate-50 relative overflow-hidden group hover:translate-y-[-5px] transition-all"
+          className={`relative overflow-hidden p-8 rounded-2xl shadow-2xl bg-gradient-to-br ${card.gradient} group hover:translate-y-[-8px] transition-all duration-300`}
         >
-          <div className={`absolute top-0 right-0 w-32 h-32 ${card.color} opacity-[0.03] rounded-bl-full -mr-10 -mt-10 group-hover:scale-110 transition-transform`} />
-          
-          <div className="flex items-center justify-between mb-4">
-            <div className={`${card.color} p-4 rounded-lg text-white shadow-lg ${card.shadow}`}>
+          {/* Efek Cahaya Dekoratif di Background */}
+          <div className="absolute top-0 right-0 w-40 h-40 bg-white opacity-[0.1] rounded-full -mr-20 -mt-20 group-hover:scale-150 transition-transform duration-500" />
+          <div className="absolute bottom-0 left-0 w-24 h-24 bg-black opacity-[0.05] rounded-full -ml-10 -mb-10" />
+
+          <div className="flex items-center justify-between mb-6">
+            <div className={`${card.iconBg} p-4 rounded-xl backdrop-blur-md text-white border border-white/20`}>
               <card.icon size={28} />
             </div>
+            
             {isLoading ? (
-              <div className="animate-pulse bg-slate-100 h-8 w-24 rounded-lg" />
+              <div className="animate-pulse bg-white/20 h-6 w-16 rounded-full" />
             ) : (
-                <div className="flex items-center gap-2 text-emerald-500 font-black text-xs bg-emerald-50 px-3 py-1 rounded-lg">
-                  <TrendingUp size={14} /> LIVE
+                <div className="flex items-center gap-2 text-white font-bold text-[10px] bg-white/20 px-3 py-1 rounded-full backdrop-blur-sm border border-white/10">
+                  <TrendingUp size={12} className="animate-bounce" /> LIVE
                 </div>
             )}
           </div>
           
-          <div>
-            <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2">{card.title}</p>
-            <h3 className={`text-2xl font-black ${card.textColor} tracking-tighter`}>
-              {isLoading ? '...' : formatCurrency(card.amount)}
+          <div className="relative z-10">
+            <p className={`text-[11px] font-bold ${card.labelColor} uppercase tracking-[0.2em] mb-1`}>
+              {card.title}
+            </p>
+            <h3 className={`text-3xl font-black ${card.textColor} tracking-tight`}>
+              {isLoading ? (
+                <div className="h-9 w-32 bg-white/20 animate-pulse rounded-lg" />
+              ) : (
+                formatCurrency(card.amount)
+              )}
             </h3>
           </div>
         </motion.div>

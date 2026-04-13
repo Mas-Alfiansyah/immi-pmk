@@ -6,8 +6,8 @@ export const Header = () => {
       <div className="absolute inset-0 bg-white/80 backdrop-blur-xl border-b border-white/20 shadow-lg shadow-slate-200/50" />
       <div className="container mx-auto px-4 h-20 flex items-center justify-between relative">
         <div className="flex items-center gap-4">
-          <div className="p-3 rounded-lg text-white shadow-xl shadow-indigo-200 hover:rotate-6 transition-transform cursor-pointer group">
-            <img src="/IMMI.png" alt="IMMI" className="w-8 h-8 object-contain group-hover:scale-110 transition-transform" />
+          <div className="text-white shadow-indigo-200 hover:rotate-6 transition-transform cursor-pointer group">
+            <img src="/IMMI.png" alt="IMMI" className="w-12 h-12 object-contain group-hover:scale-110 transition-transform" />
           </div>
           <div>
             <h1 className="text-xl font-black text-slate-900 tracking-tighter leading-none mb-1">

@@ -44,7 +44,7 @@ export const LedgerTable = ({ entries, isLoading }: LedgerTableProps) => {
   return (
     <div className="bg-white rounded-3xl shadow-2xl shadow-slate-200/50 border border-slate-100 overflow-hidden">
       {/* Header Elegan */}
-      <div className="bg-gradient-to-r from-amber-500 to-orange-600 p-8 text-white flex items-center justify-between">
+      <div className="bg-linear-to-r from-amber-500 to-orange-600 p-8 text-white flex items-center justify-between">
         <div className="flex items-center gap-4">
           <div className="bg-white/20 p-3 rounded-2xl backdrop-blur-md border border-white/20">
             <BookOpen size={24} />

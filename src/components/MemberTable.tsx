@@ -1,6 +1,6 @@
 import type { MemberPayment } from '../types';
 import { motion } from 'framer-motion';
-import { Calendar, User, CreditCard, ChevronRight } from 'lucide-react';
+import { User, CreditCard } from 'lucide-react';
 
 interface MemberTableProps {
   payments: MemberPayment[];

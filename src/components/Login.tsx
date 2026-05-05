@@ -28,8 +28,8 @@ export const Login = ({ onLogin, isLoading }: LoginProps) => {
 
   return (
     <div className="min-h-screen bg-[#f8fafc] flex items-center justify-center p-6 font-sans">
-      {/* Container utama dengan rounded-lg */}
-      <div className="w-full max-w-4xl bg-white rounded-lg shadow-xl overflow-hidden flex border border-slate-200">
+      {/* Container utama dengan rounded-xl */}
+      <div className="w-full max-w-4xl bg-white rounded-xl shadow-xl overflow-hidden flex border border-slate-200">
         
         {/* SISI KIRI (BIRU): Hidden di mobile, muncul di desktop (md:flex) */}
         <div className="hidden md:flex w-1/2 bg-indigo-700 p-12 text-white flex-col justify-between relative overflow-hidden">
@@ -38,10 +38,10 @@ export const Login = ({ onLogin, isLoading }: LoginProps) => {
           
           <div className="relative z-10">
             <div className="flex items-center gap-3 mb-8">
-              <div className="bg-white/20 p-2 rounded-lg backdrop-blur-md">
+              <div className="bg-white/20 p-2 rounded-xl backdrop-blur-md">
                 <ShieldCheck size={28} className="text-white" />
               </div>
-              <h2 className="text-xl font-bold tracking-tight uppercase">AL-KAS IMMI</h2>
+              <h2 className="text-xl font-bold tracking-tight uppercase">IMMI CASH</h2>
             </div>
             
             <motion.div
@@ -71,7 +71,7 @@ export const Login = ({ onLogin, isLoading }: LoginProps) => {
           <div className="mb-10 text-center md:text-left">
             {/* Logo kecil muncul hanya di mobile sebagai pengganti sisi biru */}
             <div className="md:hidden flex justify-center mb-6">
-                <div className="bg-indigo-600 p-3 rounded-lg shadow-lg shadow-indigo-200">
+                <div className="bg-indigo-600 p-3 rounded-xl shadow-lg shadow-indigo-200">
                     <ShieldCheck size={32} className="text-white" />
                 </div>
             </div>
@@ -89,7 +89,7 @@ export const Login = ({ onLogin, isLoading }: LoginProps) => {
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                   placeholder="admin_immi"
-                  className="w-full pl-10 pr-4 py-3 rounded-lg bg-slate-50 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all text-slate-800 text-sm font-medium"
+                  className="w-full pl-10 pr-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all text-slate-800 text-sm font-medium"
                   required
                   disabled={busy}
                 />
@@ -105,7 +105,7 @@ export const Login = ({ onLogin, isLoading }: LoginProps) => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full pl-10 pr-12 py-3 rounded-lg bg-slate-50 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all text-slate-800 text-sm font-medium"
+                  className="w-full pl-10 pr-12 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all text-slate-800 text-sm font-medium"
                   required
                   disabled={busy}
                 />
@@ -122,7 +122,7 @@ export const Login = ({ onLogin, isLoading }: LoginProps) => {
             <button
               type="submit"
               disabled={busy}
-              className="w-full py-3.5 bg-indigo-600 text-white rounded-lg font-bold text-sm shadow-lg shadow-indigo-100 hover:bg-indigo-700 transition-all flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed group active:scale-[0.98]"
+              className="w-full py-3.5 bg-indigo-600 text-white rounded-xl font-bold text-sm shadow-lg shadow-indigo-100 hover:bg-indigo-700 transition-all flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed group active:scale-[0.98]"
             >
               {busy ? (
                 <Loader2 className="animate-spin" size={20} />

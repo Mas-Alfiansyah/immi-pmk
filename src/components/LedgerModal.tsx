@@ -35,7 +35,7 @@ export const LedgerModal = ({ onAdd, isLoading }: LedgerModalProps) => {
       <div className="fixed bottom-8 right-8 z-40">
         <button
           onClick={() => setIsOpen(true)}
-          className="flex items-center gap-2 px-8 py-4 rounded-lg bg-emerald-600 text-white shadow-2xl shadow-indigo-200 hover:bg-indigo-700 transition-all hover:scale-105 active:scale-95 group font-black uppercase tracking-widest text-sm"
+          className="flex items-center gap-2 px-8 py-4 rounded-xl bg-emerald-600 text-white shadow-2xl shadow-indigo-200 hover:bg-indigo-700 transition-all hover:scale-105 active:scale-95 group font-black uppercase tracking-widest text-sm"
         >
           Input Catatan Baru
         </button>
@@ -56,14 +56,14 @@ export const LedgerModal = ({ onAdd, isLoading }: LedgerModalProps) => {
               initial={{ opacity: 0, scale: 0.9, y: 40 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.9, y: 40 }}
-              className="relative w-full max-w-lg bg-white rounded-lg p-10 shadow-3xl overflow-hidden"
+              className="relative w-full max-w-lg bg-white rounded-xl p-10 shadow-3xl overflow-hidden"
             >
               <div className="flex items-center justify-between mb-8">
                 <div>
                   <h3 className="text-2xl font-black text-slate-900">Catatan Keuangan</h3>
                   <p className="text-sm text-slate-400 font-medium tracking-tight">Tambah pemasukan atau pengeluaran umum</p>
                 </div>
-                <button onClick={() => setIsOpen(false)} className="bg-slate-50 p-2 rounded-lg text-slate-400 hover:text-slate-600 transition-colors">
+                <button onClick={() => setIsOpen(false)} className="bg-slate-50 p-2 rounded-xl text-slate-400 hover:text-slate-600 transition-colors">
                   <X size={24} />
                 </button>
               </div>
@@ -73,14 +73,14 @@ export const LedgerModal = ({ onAdd, isLoading }: LedgerModalProps) => {
                   <button
                     type="button"
                     onClick={() => setType('masuk')}
-                    className={`p-4 rounded-lg flex items-center justify-center gap-2 font-black transition-all ${type === 'masuk' ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-200' : 'bg-slate-50 text-slate-400'}`}
+                    className={`p-4 rounded-xl flex items-center justify-center gap-2 font-black transition-all ${type === 'masuk' ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-200' : 'bg-slate-50 text-slate-400'}`}
                   >
                     <ArrowDownLeft size={20} /> PEMASUKAN
                   </button>
                   <button
                     type="button"
                     onClick={() => setType('keluar')}
-                    className={`p-4 rounded-lg flex items-center justify-center gap-2 font-black transition-all ${type === 'keluar' ? 'bg-rose-600 text-white shadow-lg shadow-rose-200' : 'bg-slate-50 text-slate-400'}`}
+                    className={`p-4 rounded-xl flex items-center justify-center gap-2 font-black transition-all ${type === 'keluar' ? 'bg-rose-600 text-white shadow-lg shadow-rose-200' : 'bg-slate-50 text-slate-400'}`}
                   >
                     <ArrowUpRight size={20} /> PENGELUARAN
                   </button>
@@ -92,7 +92,7 @@ export const LedgerModal = ({ onAdd, isLoading }: LedgerModalProps) => {
                     type="date"
                     value={tanggal}
                     onChange={(e) => setTanggal(e.target.value)}
-                    className="w-full px-6 py-4 rounded-lg bg-slate-50 border border-slate-100 focus:outline-none focus:ring-4 focus:ring-primary-500/10 focus:border-primary-500 transition-all font-bold text-slate-800"
+                    className="w-full px-6 py-4 rounded-xl bg-slate-50 border border-slate-100 focus:outline-none focus:ring-4 focus:ring-primary-500/10 focus:border-primary-500 transition-all font-bold text-slate-800"
                   />
                 </div>
 
@@ -104,7 +104,7 @@ export const LedgerModal = ({ onAdd, isLoading }: LedgerModalProps) => {
                       type="number"
                       value={nominal}
                       onChange={(e) => setNominal(e.target.value)}
-                      className="w-full pl-14 pr-6 py-4 rounded-lg bg-slate-50 border border-slate-100 focus:outline-none focus:ring-4 focus:ring-primary-500/10 focus:border-primary-500 transition-all font-black text-slate-800 text-xl"
+                      className="w-full pl-14 pr-6 py-4 rounded-xl bg-slate-50 border border-slate-100 focus:outline-none focus:ring-4 focus:ring-primary-500/10 focus:border-primary-500 transition-all font-black text-slate-800 text-xl"
                       placeholder="0"
                       required
                     />
@@ -116,7 +116,7 @@ export const LedgerModal = ({ onAdd, isLoading }: LedgerModalProps) => {
                   <textarea
                     value={keterangan}
                     onChange={(e) => setKeterangan(e.target.value)}
-                    className="w-full px-6 py-4 rounded-lg bg-slate-50 border border-slate-100 focus:outline-none focus:ring-4 focus:ring-primary-500/10 focus:border-primary-500 transition-all font-bold text-slate-800 min-h-[100px]"
+                    className="w-full px-6 py-4 rounded-xl bg-slate-50 border border-slate-100 focus:outline-none focus:ring-4 focus:ring-primary-500/10 focus:border-primary-500 transition-all font-bold text-slate-800 min-h-[100px]"
                     placeholder="Contoh: Beli konsumsi rapat"
                     required
                   />
@@ -125,7 +125,7 @@ export const LedgerModal = ({ onAdd, isLoading }: LedgerModalProps) => {
                 <button
                   type="submit"
                   disabled={isLoading}
-                  className={`w-full py-5 text-white rounded-lg font-black text-lg shadow-xl transition-all hover:translate-y-[-2px] active:translate-y-0 flex items-center justify-center gap-3 disabled:opacity-70 ${type === 'masuk' ? 'bg-emerald-600 shadow-emerald-200' : 'bg-rose-600 shadow-rose-200'}`}
+                  className={`w-full py-5 text-white rounded-xl font-black text-lg shadow-xl transition-all hover:translate-y-[-2px] active:translate-y-0 flex items-center justify-center gap-3 disabled:opacity-70 ${type === 'masuk' ? 'bg-emerald-600 shadow-emerald-200' : 'bg-rose-600 shadow-rose-200'}`}
                 >
                   {isLoading ? <Loader2 className="animate-spin" /> : <Save size={20} />}
                   SIMPAN CATATAN

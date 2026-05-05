@@ -51,7 +51,7 @@ export const PaymentModal = ({ memberNames, onAdd, isLoading, currentBulan, curr
       <div className="fixed bottom-8 right-8 z-40">
         <button
           onClick={() => setIsOpen(true)}
-          className="flex items-center gap-2 px-8 py-4 rounded-lg bg-emerald-600 text-white shadow-2xl shadow-emerald-200 hover:bg-emerald-700 transition-all hover:scale-105 active:scale-95 group"
+          className="flex items-center gap-2 px-8 py-4 rounded-xl bg-emerald-600 text-white shadow-2xl shadow-emerald-200 hover:bg-emerald-700 transition-all hover:scale-105 active:scale-95 group"
         >
           <Plus size={24} className="group-hover:rotate-90 transition-transform" />
           <span className="font-black uppercase tracking-widest text-sm">Input Iuran</span>
@@ -73,14 +73,14 @@ export const PaymentModal = ({ memberNames, onAdd, isLoading, currentBulan, curr
               initial={{ opacity: 0, scale: 0.9, y: 40 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.9, y: 40 }}
-              className="relative w-full max-w-lg bg-white rounded-lg p-10 shadow-3xl overflow-hidden"
+              className="relative w-full max-w-lg bg-white rounded-xl p-10 shadow-3xl overflow-hidden"
             >
               <div className="flex items-center justify-between mb-8">
                 <div>
                   <h3 className="text-2xl font-black text-slate-900">Pembayaran Kas</h3>
                   <p className="text-sm text-slate-400 font-medium">Periode {currentBulan} {currentTahun}</p>
                 </div>
-                <button onClick={() => setIsOpen(false)} className="bg-slate-50 p-2 rounded-lg text-slate-400 hover:text-slate-600 transition-colors">
+                <button onClick={() => setIsOpen(false)} className="bg-slate-50 p-2 rounded-xl text-slate-400 hover:text-slate-600 transition-colors">
                   <X size={24} />
                 </button>
               </div>
@@ -105,7 +105,7 @@ export const PaymentModal = ({ memberNames, onAdd, isLoading, currentBulan, curr
                         type="date"
                         value={tanggal}
                         onChange={(e) => setTanggal(e.target.value)}
-                        className="w-full pl-12 pr-4 py-4 rounded-lg bg-slate-50 border border-slate-100 focus:outline-none focus:ring-4 focus:ring-primary-500/10 focus:border-primary-500 transition-all font-bold text-slate-800"
+                        className="w-full pl-12 pr-4 py-4 rounded-xl bg-slate-50 border border-slate-100 focus:outline-none focus:ring-4 focus:ring-primary-500/10 focus:border-primary-500 transition-all font-bold text-slate-800"
                       />
                     </div>
                   </div>
@@ -114,7 +114,7 @@ export const PaymentModal = ({ memberNames, onAdd, isLoading, currentBulan, curr
                     <select
                       value={termin}
                       onChange={(e) => setTermin(e.target.value)}
-                      className="w-full px-6 py-4 rounded-lg bg-slate-50 border border-slate-100 focus:outline-none focus:ring-4 focus:ring-primary-500/10 focus:border-primary-500 transition-all font-bold text-slate-800 appearance-none"
+                      className="w-full px-6 py-4 rounded-xl bg-slate-50 border border-slate-100 focus:outline-none focus:ring-4 focus:ring-primary-500/10 focus:border-primary-500 transition-all font-bold text-slate-800 appearance-none"
                     >
                       <option value="1">Awal Bulan</option>
                       <option value="2">Akhir Bulan</option>
@@ -128,7 +128,7 @@ export const PaymentModal = ({ memberNames, onAdd, isLoading, currentBulan, curr
                     <select
                       value={metode}
                       onChange={(e) => setMetode(e.target.value as PaymentMethod)}
-                      className="w-full px-6 py-4 rounded-lg bg-slate-50 border border-slate-100 focus:outline-none focus:ring-4 focus:ring-primary-500/10 focus:border-primary-500 transition-all font-bold text-slate-800 appearance-none"
+                      className="w-full px-6 py-4 rounded-xl bg-slate-50 border border-slate-100 focus:outline-none focus:ring-4 focus:ring-primary-500/10 focus:border-primary-500 transition-all font-bold text-slate-800 appearance-none"
                     >
                       <option value="online">Online</option>
                       <option value="offline">Offline</option>
@@ -142,7 +142,7 @@ export const PaymentModal = ({ memberNames, onAdd, isLoading, currentBulan, curr
                         type="number"
                         value={nominal}
                         onChange={(e) => setNominal(e.target.value)}
-                        className="w-full pl-14 pr-6 py-4 rounded-lg bg-slate-50 border border-slate-100 focus:outline-none focus:ring-4 focus:ring-primary-500/10 focus:border-primary-500 transition-all font-black text-slate-800 text-lg"
+                        className="w-full pl-14 pr-6 py-4 rounded-xl bg-slate-50 border border-slate-100 focus:outline-none focus:ring-4 focus:ring-primary-500/10 focus:border-primary-500 transition-all font-black text-slate-800 text-lg"
                         required
                       />
                     </div>
@@ -152,7 +152,7 @@ export const PaymentModal = ({ memberNames, onAdd, isLoading, currentBulan, curr
                 <button
                   type="submit"
                   disabled={isLoading}
-                  className="w-full py-5 bg-emerald-600 text-white rounded-lg font-black text-lg shadow-xl shadow-emerald-200 hover:bg-emerald-700 transition-all hover:translate-y-[-2px] active:translate-y-0 flex items-center justify-center gap-3 disabled:opacity-70"
+                  className="w-full py-5 bg-emerald-600 text-white rounded-xl font-black text-lg shadow-xl shadow-emerald-200 hover:bg-emerald-700 transition-all hover:translate-y-[-2px] active:translate-y-0 flex items-center justify-center gap-3 disabled:opacity-70"
                 >
                   {isLoading ? <Loader2 className="animate-spin" /> : <Send size={20} />}
                   SIMPAN PEMBAYARAN

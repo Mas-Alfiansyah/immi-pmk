@@ -84,7 +84,7 @@ export const SummaryCards = ({ total1, total2, total3, isLoading, mode }: Summar
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: idx * 0.1 }}
           key={`${mode}-${idx}`}
-          className={`relative overflow-hidden p-8 rounded-2xl shadow-2xl bg-linear-to-br ${card.gradient} group hover:translate-y-[-8px] transition-all duration-300`}
+          className={`relative overflow-hidden p-8 rounded-xl shadow-2xl bg-linear-to-br ${card.gradient} group hover:translate-y-[-8px] transition-all duration-300`}
         >
           {/* Efek Cahaya Dekoratif di Background */}
           <div className="absolute top-0 right-0 w-40 h-40 bg-white opacity-[0.1] rounded-full -mr-20 -mt-20 group-hover:scale-150 transition-transform duration-500" />
@@ -110,7 +110,7 @@ export const SummaryCards = ({ total1, total2, total3, isLoading, mode }: Summar
             </p>
             <h3 className={`text-3xl font-black ${card.textColor} tracking-tight`}>
               {isLoading ? (
-                <div className="h-9 w-32 bg-white/20 animate-pulse rounded-lg" />
+                <div className="h-9 w-32 bg-white/20 animate-pulse rounded-xl" />
               ) : (
                 formatCurrency(card.amount)
               )}

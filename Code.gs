@@ -6,6 +6,7 @@
 var MEMBER_SHEET  = "Anggota";
 var CATATAN_SHEET = "Catatan";
 var USER_SHEET    = "Users";       // Sheet baru untuk login
+var SELLER_SHEET  = "Sellers";
 
 // ─────────────────────────────────────────────
 //  ROUTING UTAMA
@@ -37,6 +38,11 @@ function doGet(e) {
         };
       });
       return jsonResponse({ data: mapped });
+    }
+
+    // ── GET SELLERS ─────────────────────────────
+    if (action === "getSellers") {
+      return jsonResponse({ data: getSellersData() });
     }
 
     // ── GET IURAN (default) ────────────────────
@@ -112,6 +118,17 @@ function doPost(e) {
       updateLedger(nominal, 0, ket, tgl);
 
       return jsonResponse({ status: "success" });
+    }
+
+    // ── SELLERS ACTIONS ────────────────────────
+    if (p.action === "addSeller") {
+      return jsonResponse(addSellerData(p));
+    }
+    if (p.action === "updateSeller") {
+      return jsonResponse(updateSellerData(p));
+    }
+    if (p.action === "deleteSeller") {
+      return jsonResponse(deleteSellerData(p.id));
     }
 
     throw new Error("Action tidak dikenal: " + p.action);
@@ -286,4 +303,97 @@ function jsonResponse(obj) {
   return ContentService
     .createTextOutput(JSON.stringify(obj))
     .setMimeType(ContentService.MimeType.JSON);
+}
+
+// ─────────────────────────────────────────────
+//  SELLER MANAGEMENT
+// ─────────────────────────────────────────────
+
+function getSellersData() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = ss.getSheetByName(SELLER_SHEET) || setupSellerSheet();
+  var data = sheet.getDataRange().getValues();
+  if (data.length <= 1) return [];
+  
+  var headers = data[0];
+  var rows = data.slice(1);
+  
+  return rows.map(function(r) {
+    var obj = {};
+    headers.forEach(function(h, i) {
+      obj[h.toLowerCase()] = r[i];
+    });
+    return obj;
+  });
+}
+
+function addSellerData(p) {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = ss.getSheetByName(SELLER_SHEET) || setupSellerSheet();
+  var id = "SEL-" + new Date().getTime();
+  var row = [id, p.nama, p.alamat, p.telepon, p.email, p.status || "Aktif"];
+  sheet.appendRow(row);
+  sheet.getRange(sheet.getLastRow(), 1, 1, 6).setBorder(true, true, true, true, true, true);
+  return { status: "success", id: id };
+}
+
+function updateSellerData(p) {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = ss.getSheetByName(SELLER_SHEET) || setupSellerSheet();
+  var data = sheet.getDataRange().getValues();
+  var rowIndex = -1;
+  
+  for (var i = 1; i < data.length; i++) {
+    if (data[i][0] === p.id) {
+      rowIndex = i + 1;
+      break;
+    }
+  }
+  
+  if (rowIndex === -1) throw new Error("Seller ID tidak ditemukan.");
+  
+  sheet.getRange(rowIndex, 2).setValue(p.nama);
+  sheet.getRange(rowIndex, 3).setValue(p.alamat);
+  sheet.getRange(rowIndex, 4).setValue(p.telepon);
+  sheet.getRange(rowIndex, 5).setValue(p.email);
+  sheet.getRange(rowIndex, 6).setValue(p.status);
+  
+  return { status: "success" };
+}
+
+function deleteSellerData(id) {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = ss.getSheetByName(SELLER_SHEET) || setupSellerSheet();
+  var data = sheet.getDataRange().getValues();
+  var rowIndex = -1;
+  
+  for (var i = 1; i < data.length; i++) {
+    if (data[i][0] === id) {
+      rowIndex = i + 1;
+      break;
+    }
+  }
+  
+  if (rowIndex === -1) throw new Error("Seller ID tidak ditemukan.");
+  
+  sheet.deleteRow(rowIndex);
+  return { status: "success" };
+}
+
+function setupSellerSheet() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = ss.insertSheet(SELLER_SHEET);
+  sheet.getRange("A1:F1")
+    .setValues([["ID", "NAMA", "ALAMAT", "TELEPON", "EMAIL", "STATUS"]])
+    .setFontWeight("bold")
+    .setBackground("#d9ead3")
+    .setBorder(true, true, true, true, true, true);
+  
+  sheet.setColumnWidth(1, 120);
+  sheet.setColumnWidth(2, 200);
+  sheet.setColumnWidth(3, 250);
+  sheet.setColumnWidth(4, 150);
+  sheet.setColumnWidth(5, 200);
+  sheet.setColumnWidth(6, 100);
+  return sheet;
 }

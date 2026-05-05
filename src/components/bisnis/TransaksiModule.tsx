@@ -7,63 +7,29 @@ import {
   CreditCard, 
   Receipt,
   Package,
-  ChevronRight,
   Minus,
-  User
+  Loader2
 } from 'lucide-react';
 import { Combobox } from '../Combobox';
-
-// Reusing types or defining them locally for now
-interface Variant {
-  nama: string;
-  hargaBeli: number;
-  laba: number;
-  hargaJual: number;
-  stok: number;
-}
-
-interface Product {
-  id: string;
-  nama: string;
-  kategori: string;
-  variants: Variant[];
-}
+import { useSellers } from '../../hooks/useSellers';
+import { useBarang } from '../../hooks/useBarang';
+import { useTransactions } from '../../hooks/useTransactions';
 
 interface CartItem {
   id: string;
   nama: string;
-  variant: string;
-  harga: number;
+  varian: string;
+  harga_beli: number;
+  laba: number;
+  harga_jual: number;
   jumlah: number;
   total: number;
 }
 
 export const TransaksiModule = () => {
-  // Mock data - in a real app this would come from a global state or API
-  const [products] = useState<Product[]>([
-    { 
-      id: '1', 
-      nama: 'Parfum', 
-      kategori: 'Merchandise', 
-      variants: [
-        { nama: 'Extrait de parfum', hargaBeli: 50000, laba: 25000, hargaJual: 75000, stok: 10 },
-        { nama: 'Ukuran XL', hargaBeli: 55000, laba: 25000, hargaJual: 80000, stok: 5 }
-      ] 
-    },
-    {
-      id: '2',
-      nama: 'Sticker IMMI',
-      kategori: 'Aksesoris',
-      variants: [
-        { nama: 'Default', hargaBeli: 2000, laba: 3000, hargaJual: 5000, stok: 100 }
-      ]
-    }
-  ]);
-
-  const [sellers] = useState([
-    { id: '1', nama: 'Murniati' },
-    { id: '2', nama: 'Contoh Seller B' }
-  ]);
+  const { sellers, isLoading: isLoadingSellers } = useSellers();
+  const { items: products, isLoading: isLoadingProducts } = useBarang();
+  const { addTransaction, isLoading: isSubmitting } = useTransactions();
 
   const [cart, setCart] = useState<CartItem[]>([]);
   const [selectedSeller, setSelectedSeller] = useState('');
@@ -73,50 +39,68 @@ export const TransaksiModule = () => {
 
   // Derive options for Combobox
   const sellerOptions = useMemo(() => sellers.map(s => s.nama), [sellers]);
-  const productOptions = useMemo(() => products.map(p => p.nama), [products]);
+  const productOptions = useMemo(() => {
+    // Unique product names from the flat list of barang
+    const names = products.map(p => p.nama_barang);
+    return Array.from(new Set(names));
+  }, [products]);
   
-  const currentProduct = useMemo(() => 
-    products.find(p => p.nama === selectedProduct), 
+  const filteredProductsBySelectedName = useMemo(() => 
+    products.filter(p => p.nama_barang === selectedProduct), 
   [products, selectedProduct]);
 
   const variantOptions = useMemo(() => 
-    currentProduct ? currentProduct.variants.map(v => v.nama) : [], 
-  [currentProduct]);
+    filteredProductsBySelectedName.map(p => p.varian), 
+  [filteredProductsBySelectedName]);
 
   const currentVariant = useMemo(() => 
-    currentProduct?.variants.find(v => v.nama === selectedVariant), 
-  [currentProduct, selectedVariant]);
+    filteredProductsBySelectedName.find(p => p.varian === selectedVariant), 
+  [filteredProductsBySelectedName, selectedVariant]);
 
   const handleAddToCart = () => {
-    if (!currentProduct || !currentVariant) return;
+    if (!currentVariant) return;
 
     const existingItemIndex = cart.findIndex(
-      item => item.id === currentProduct.id && item.variant === currentVariant.nama
+      item => item.id === currentVariant.id
     );
 
     if (existingItemIndex > -1) {
       const newCart = [...cart];
       newCart[existingItemIndex].jumlah += jumlah;
-      newCart[existingItemIndex].total = newCart[existingItemIndex].jumlah * newCart[existingItemIndex].harga;
+      newCart[existingItemIndex].total = newCart[existingItemIndex].jumlah * newCart[existingItemIndex].harga_jual;
       setCart(newCart);
     } else {
       const newItem: CartItem = {
-        id: currentProduct.id,
-        nama: currentProduct.nama,
-        variant: currentVariant.nama,
-        harga: currentVariant.hargaJual,
+        id: currentVariant.id,
+        nama: currentVariant.nama_barang,
+        varian: currentVariant.varian,
+        harga_beli: currentVariant.harga_beli,
+        laba: currentVariant.laba,
+        harga_jual: currentVariant.harga_jual,
         jumlah: jumlah,
-        total: currentVariant.hargaJual * jumlah
+        total: currentVariant.harga_jual * jumlah
       };
       setCart([...cart, newItem]);
     }
 
     // Reset inputs
     setJumlah(1);
+    setSelectedVariant('');
   };
 
   const removeFromCart = (index: number) => {
     setCart(prev => prev.filter((_, i) => i !== index));
+  };
+
+  const handleCheckout = async () => {
+    if (cart.length === 0 || !selectedSeller) return;
+    const success = await addTransaction(cart, selectedSeller);
+    if (success) {
+      setCart([]);
+      setSelectedSeller('');
+      setSelectedProduct('');
+      setSelectedVariant('');
+    }
   };
 
   const totalBayar = cart.reduce((acc, item) => acc + item.total, 0);
@@ -128,6 +112,8 @@ export const TransaksiModule = () => {
       minimumFractionDigits: 0 
     }).format(amount);
   };
+
+  const isLoading = isLoadingSellers || isLoadingProducts || isSubmitting;
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -211,14 +197,14 @@ export const TransaksiModule = () => {
               <div>
                 <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 ml-1">Harga Satuan</label>
                 <div className="px-6 py-4 rounded-xl bg-slate-100 border border-slate-200 font-black text-slate-500">
-                  {currentVariant ? formatCurrency(currentVariant.hargaJual) : 'Rp 0'}
+                  {currentVariant ? formatCurrency(currentVariant.harga_jual) : 'Rp 0'}
                 </div>
               </div>
             </div>
 
             <button
               onClick={handleAddToCart}
-              disabled={!selectedProduct || !selectedVariant}
+              disabled={!selectedProduct || !selectedVariant || isLoading}
               className="w-full py-5 bg-indigo-600 text-white rounded-xl font-black text-lg shadow-xl shadow-indigo-200 hover:bg-indigo-700 transition-all hover:translate-y-[-2px] active:translate-y-0 flex items-center justify-center gap-3 disabled:opacity-50 disabled:translate-y-0"
             >
               <Plus size={20} /> TAMBAH KE DAFTAR
@@ -235,11 +221,16 @@ export const TransaksiModule = () => {
           <h3 className="text-4xl font-black tracking-tighter mb-8">{formatCurrency(totalBayar)}</h3>
           
           <button
-            disabled={cart.length === 0}
+            onClick={handleCheckout}
+            disabled={cart.length === 0 || !selectedSeller || isLoading}
             className="w-full py-4 bg-emerald-500 text-white rounded-xl font-black text-lg shadow-lg shadow-emerald-500/30 hover:bg-emerald-600 transition-all flex items-center justify-center gap-3 disabled:opacity-50"
           >
-            <CreditCard size={20} /> BAYAR SEKARANG
+            {isSubmitting ? <Loader2 className="animate-spin" /> : <CreditCard size={20} />}
+            BAYAR SEKARANG
           </button>
+          {!selectedSeller && cart.length > 0 && (
+            <p className="mt-4 text-[10px] text-center font-bold text-rose-300 uppercase tracking-widest">Silakan pilih seller terlebih dahulu</p>
+          )}
         </div>
       </div>
 
@@ -274,7 +265,7 @@ export const TransaksiModule = () => {
                 <AnimatePresence>
                   {cart.map((item, idx) => (
                     <motion.div
-                      key={`${item.id}-${item.variant}`}
+                      key={`${item.id}-${item.varian}`}
                       initial={{ opacity: 0, x: 20 }}
                       animate={{ opacity: 1, x: 0 }}
                       exit={{ opacity: 0, x: -20 }}
@@ -286,7 +277,7 @@ export const TransaksiModule = () => {
                         </div>
                         <div>
                           <h4 className="font-black text-slate-800 uppercase tracking-tight leading-none mb-1">{item.nama}</h4>
-                          <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{item.variant}</p>
+                          <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{item.varian}</p>
                         </div>
                       </div>
                       

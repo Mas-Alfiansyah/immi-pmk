@@ -9,6 +9,8 @@ var USER_SHEET    = "Users";       // Sheet baru untuk login
 var SELLER_SHEET  = "Sellers";
 var BARANG_SHEET  = "Barang";
 var VARIAN_SHEET  = "Master_Varian";
+var TRANSAKSI_BISNIS_SHEET = "Transaksi_Bisnis";
+var PENGELUARAN_BISNIS_SHEET = "Pengeluaran_Bisnis";
 
 // ─────────────────────────────────────────────
 //  ROUTING UTAMA
@@ -55,6 +57,17 @@ function doGet(e) {
     // ── GET VARIAN ──────────────────────────────
     if (action === "getVariants") {
       return jsonResponse({ data: getVariantsData() });
+    }
+
+    // ── GET TRANSAKSI & PENGELUARAN ─────────────
+    if (action === "getTransaksiBisnis") {
+      return jsonResponse({ data: getTransaksiBisnisData() });
+    }
+    if (action === "getPengeluaranBisnis") {
+      return jsonResponse({ data: getPengeluaranBisnisData() });
+    }
+    if (action === "getDompetStats") {
+      return jsonResponse(getDompetStatsData());
     }
 
     // ── GET IURAN (default) ────────────────────
@@ -160,6 +173,14 @@ function doPost(e) {
     }
     if (p.action === "deleteVariant") {
       return jsonResponse(deleteVariantData(p.id));
+    }
+
+    // ── TRANSAKSI & PENGELUARAN ACTIONS ────────
+    if (p.action === "addTransaksiBisnis") {
+      return jsonResponse(addTransaksiBisnisData(p.items, p.seller));
+    }
+    if (p.action === "addPengeluaranBisnis") {
+      return jsonResponse(addPengeluaranBisnisData(p));
     }
 
     throw new Error("Action tidak dikenal: " + p.action);
@@ -589,5 +610,153 @@ function setupVariantSheet() {
   
   sheet.setColumnWidth(1, 150);
   sheet.setColumnWidth(2, 250);
+  return sheet;
+}
+
+// ─────────────────────────────────────────────
+//  TRANSAKSI & DOMPET BISNIS
+// ─────────────────────────────────────────────
+
+function getTransaksiBisnisData() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = ss.getSheetByName(TRANSAKSI_BISNIS_SHEET) || setupTransaksiBisnisSheet();
+  var data = sheet.getDataRange().getValues();
+  if (data.length <= 1) return [];
+  
+  var headers = data[0];
+  var rows = data.slice(1);
+  
+  return rows.map(function(r) {
+    var obj = {};
+    headers.forEach(function(h, i) {
+      obj[h.toLowerCase()] = r[i];
+    });
+    return obj;
+  });
+}
+
+function getPengeluaranBisnisData() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = ss.getSheetByName(PENGELUARAN_BISNIS_SHEET) || setupPengeluaranBisnisSheet();
+  var data = sheet.getDataRange().getValues();
+  if (data.length <= 1) return [];
+  
+  var headers = data[0];
+  var rows = data.slice(1);
+  
+  return rows.map(function(r) {
+    var obj = {};
+    headers.forEach(function(h, i) {
+      obj[h.toLowerCase()] = r[i];
+    });
+    return obj;
+  });
+}
+
+function addTransaksiBisnisData(items, seller) {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = ss.getSheetByName(TRANSAKSI_BISNIS_SHEET) || setupTransaksiBisnisSheet();
+  var tgl = new Date();
+  
+  items.forEach(function(item) {
+    var id = "TRX-" + new Date().getTime() + "-" + Math.floor(Math.random() * 1000);
+    var subtotalLaba = (item.laba || 0) * (item.jumlah || 1);
+    var row = [
+      id,
+      tgl,
+      seller,
+      item.nama_barang || item.nama,
+      item.varian,
+      item.jumlah,
+      item.harga_beli,
+      item.laba,
+      item.harga_jual,
+      subtotalLaba
+    ];
+    sheet.appendRow(row);
+  });
+  
+  sheet.getRange(2, 1, sheet.getLastRow()-1, 10).setBorder(true, true, true, true, true, true);
+  return { status: "success" };
+}
+
+function addPengeluaranBisnisData(p) {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = ss.getSheetByName(PENGELUARAN_BISNIS_SHEET) || setupPengeluaranBisnisSheet();
+  var id = "EXP-" + new Date().getTime();
+  var tgl = p.tanggal ? new Date(p.tanggal) : new Date();
+  var row = [
+    id,
+    tgl,
+    p.kategori,
+    p.keterangan,
+    p.nominal || 0
+  ];
+  sheet.appendRow(row);
+  sheet.getRange(sheet.getLastRow(), 1, 1, 5).setBorder(true, true, true, true, true, true);
+  return { status: "success" };
+}
+
+function getDompetStatsData() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var trxSheet = ss.getSheetByName(TRANSAKSI_BISNIS_SHEET) || setupTransaksiBisnisSheet();
+  var expSheet = ss.getSheetByName(PENGELUARAN_BISNIS_SHEET) || setupPengeluaranBisnisSheet();
+  
+  var trxData = trxSheet.getDataRange().getValues().slice(1);
+  var expData = expSheet.getDataRange().getValues().slice(1);
+  
+  // Total Pemasukan = Omset (Sum of HARGA_JUAL * JUMLAH)
+  var totalPemasukan = trxData.reduce(function(acc, r) {
+    var qty = parseFloat(r[5]) || 0;
+    var hargaJual = parseFloat(r[8]) || 0;
+    return acc + (qty * hargaJual);
+  }, 0);
+
+  // Laba Kotor = Sum of SUBTOTAL_LABA (Column J)
+  var totalLabaKotor = trxData.reduce(function(acc, r) {
+    return acc + (parseFloat(r[9]) || 0);
+  }, 0);
+  
+  var totalPengeluaran = expData.reduce(function(acc, r) {
+    return acc + (parseFloat(r[4]) || 0);
+  }, 0);
+  
+  return {
+    totalPemasukan: totalPemasukan,
+    labaKotor: totalLabaKotor,
+    totalPengeluaran: totalPengeluaran,
+    labaBersih: totalLabaKotor - totalPengeluaran
+  };
+}
+
+function setupTransaksiBisnisSheet() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = ss.insertSheet(TRANSAKSI_BISNIS_SHEET);
+  sheet.getRange("A1:J1")
+    .setValues([["ID", "TANGGAL", "SELLER", "BARANG", "VARIAN", "JUMLAH", "HARGA_BELI", "LABA", "HARGA_JUAL", "SUBTOTAL_LABA"]])
+    .setFontWeight("bold")
+    .setBackground("#d9ead3")
+    .setBorder(true, true, true, true, true, true);
+  
+  sheet.setColumnWidth(1, 120);
+  sheet.setColumnWidth(2, 120);
+  sheet.setColumnWidth(3, 150);
+  sheet.setColumnWidth(4, 200);
+  sheet.setColumnWidth(10, 120);
+  return sheet;
+}
+
+function setupPengeluaranBisnisSheet() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = ss.insertSheet(PENGELUARAN_BISNIS_SHEET);
+  sheet.getRange("A1:E1")
+    .setValues([["ID", "TANGGAL", "KATEGORI", "KETERANGAN", "NOMINAL"]])
+    .setFontWeight("bold")
+    .setBackground("#f4cccc")
+    .setBorder(true, true, true, true, true, true);
+  
+  sheet.setColumnWidth(1, 120);
+  sheet.setColumnWidth(2, 120);
+  sheet.setColumnWidth(4, 250);
   return sheet;
 }
